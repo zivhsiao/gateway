@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -218,14 +219,21 @@ class BotController extends Controller
             ->where('sender_id', '=', $request['userid'])
             ->get();
 
+        if(empty($user)){
+
+            Log::info('fb user_id: '. $request['userid']);
+
+            echo $request['userid'];
+
+        } else {
+            $sender_id = $user[0]->sender_id;
 
 
-        $sender_id = $user[0]->sender_id;
+            $re = "密碼：" . $request['message'];
 
+            $this->dispatchResponse($sender_id, $re);
 
-        $re = "密碼：" . $request['message'];
-
-        $this->dispatchResponse($sender_id, $re);
+        }
 
         return "<script>window.close();</script>";
     }
